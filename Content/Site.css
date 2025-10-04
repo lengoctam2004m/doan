@@ -1,0 +1,193 @@
+body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% width by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+/* Product cards */
+.thumbnail {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 4px;
+    margin-bottom: 20px;
+    transition: box-shadow 0.3s ease;
+}
+
+.thumbnail:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.thumbnail img {
+    border-radius: 4px;
+}
+
+/* Product grid */
+.product-grid {
+    margin-bottom: 30px;
+}
+
+/* Category cards */
+.category-card {
+    text-align: center;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    transition: box-shadow 0.3s ease;
+}
+
+.category-card:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Status labels */
+.label {
+    font-size: 11px;
+    padding: 4px 8px;
+}
+
+/* Table styles */
+.table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+}
+
+.table-responsive {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Button styles */
+.btn {
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+/* Form styles */
+.form-horizontal .control-label {
+    text-align: left;
+}
+
+/* Jumbotron customization */
+.jumbotron {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    margin-bottom: 30px;
+}
+
+.jumbotron h1 {
+    font-size: 3.5rem;
+    font-weight: bold;
+}
+
+.jumbotron p {
+    font-size: 1.2rem;
+}
+
+/* Search form */
+.navbar-form .form-control {
+    width: 200px;
+}
+
+/* Footer */
+footer {
+    margin-top: 50px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+    text-align: center;
+    color: #666;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .jumbotron h1 {
+        font-size: 2.5rem;
+    }
+    
+    .jumbotron p {
+        font-size: 1rem;
+    }
+    
+    .navbar-form .form-control {
+        width: 150px;
+    }
+    
+    .btn-group .btn {
+        display: block;
+        width: 100%;
+        margin-bottom: 5px;
+    }
+}
+
+/* Loading spinner */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Alert styles */
+.alert {
+    margin-top: 20px;
+}
+
+/* Image styles */
+.img-responsive {
+    max-width: 100%;
+    height: auto;
+}
+
+.img-thumbnail {
+    padding: 4px;
+    line-height: 1.42857143;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Price styling */
+.price {
+    color: #e74c3c;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+/* Stock status */
+.in-stock {
+    color: #27ae60;
+    font-weight: bold;
+}
+
+.out-of-stock {
+    color: #e74c3c;
+    font-weight: bold;
+}

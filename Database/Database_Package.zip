@@ -1,0 +1,42 @@
+# TechStore Database Package
+# Gói cơ sở dữ liệu hoàn chỉnh cho TechStore
+
+## 📦 Nội dung gói:
+
+### 🗄️ **Database Scripts:**
+- `TechStoreDB.sql` - Database đầy đủ với Stored Procedures, Views, Triggers
+- `CreateDatabase.sql` - Database đơn giản, dễ sử dụng
+- `BackupDatabase.sql` - Script backup database
+- `RestoreDatabase.sql` - Script khôi phục database
+
+### 🛠️ **Setup Tools:**
+- `SetupDatabase.bat` - Script tự động tạo database
+- `README_Database.md` - Hướng dẫn chi tiết
+
+### 📊 **Database Features:**
+- ✅ 6 bảng chính (Categories, Products, Customers, Orders, OrderDetails, AdminUsers)
+- ✅ Dữ liệu mẫu đầy đủ
+- ✅ Stored Procedures cho thống kê
+- ✅ Views cho báo cáo
+- ✅ Triggers tự động cập nhật
+- ✅ Indexes tối ưu hiệu suất
+
+### 🔐 **Tài khoản Admin:**
+- **SuperAdmin**: admin / admin123
+- **Admin**: manager / manager123
+
+### 🚀 **Cách sử dụng nhanh:**
+1. Chạy `SetupDatabase.bat` để tạo database tự động
+2. Hoặc chạy `CreateDatabase.sql` trong SQL Server Management Studio
+3. Cập nhật connection string trong Web.config
+4. Chạy website!
+
+### 📋 **Yêu cầu:**
+- SQL Server 2016+ hoặc LocalDB
+- Quyền tạo database
+- Windows OS (cho file .bat)
+
+---
+**Tạo bởi: TechStore Development Team**
+**Ngày: 2024**
+**Phiên bản: 1.0**

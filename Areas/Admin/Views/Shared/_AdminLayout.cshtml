@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Admin Panel - TechStore</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <style>
+        .admin-sidebar {
+            background-color: #2c3e50;
+            min-height: 100vh;
+            padding-top: 20px;
+        }
+        .admin-sidebar .nav-link {
+            color: #ecf0f1;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin: 5px 10px;
+            transition: all 0.3s;
+        }
+        .admin-sidebar .nav-link:hover {
+            background-color: #34495e;
+            color: #fff;
+        }
+        .admin-sidebar .nav-link.active {
+            background-color: #3498db;
+            color: #fff;
+        }
+        .admin-content {
+            padding: 20px;
+        }
+        .admin-header {
+            background-color: #34495e;
+            color: white;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .stat-card h3 {
+            font-size: 2.5em;
+            margin: 0;
+        }
+        .stat-card p {
+            margin: 5px 0 0 0;
+            opacity: 0.9;
+        }
+        .chart-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .admin-user-info {
+            display: inline-block;
+            color: white;
+            padding: 10px;
+        }
+        .admin-user-info .btn-group {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 admin-sidebar">
+                <h4 class="text-center text-white mb-4">Admin Panel</h4>
+                <nav class="nav flex-column">
+                    <a class="nav-link @(ViewContext.RouteData.Values["Action"].ToString() == "Index" ? "active" : "")" href="@Url.Action("Index", "Admin")">
+                        <i class="glyphicon glyphicon-dashboard"></i> Dashboard
+                    </a>
+                    <a class="nav-link @(ViewContext.RouteData.Values["Action"].ToString() == "Products" ? "active" : "")" href="@Url.Action("Products", "Admin")">
+                        <i class="glyphicon glyphicon-th-list"></i> Sản phẩm
+                    </a>
+                    <a class="nav-link @(ViewContext.RouteData.Values["Action"].ToString() == "Orders" ? "active" : "")" href="@Url.Action("Orders", "Admin")">
+                        <i class="glyphicon glyphicon-shopping-cart"></i> Đơn hàng
+                    </a>
+                    <a class="nav-link @(ViewContext.RouteData.Values["Action"].ToString() == "Customers" ? "active" : "")" href="@Url.Action("Customers", "Admin")">
+                        <i class="glyphicon glyphicon-user"></i> Khách hàng
+                    </a>
+                    <a class="nav-link @(ViewContext.RouteData.Values["Action"].ToString() == "Categories" ? "active" : "")" href="@Url.Action("Categories", "Admin")">
+                        <i class="glyphicon glyphicon-tags"></i> Danh mục
+                    </a>
+                    <a class="nav-link @(ViewContext.RouteData.Values["Action"].ToString() == "Reports" ? "active" : "")" href="@Url.Action("Reports", "Admin")">
+                        <i class="glyphicon glyphicon-stats"></i> Báo cáo
+                    </a>
+                    <hr style="border-color: #34495e;">
+                    <a class="nav-link" href="@Url.Action("Index", "Home", new { area = "" })">
+                        <i class="glyphicon glyphicon-home"></i> Về trang chủ
+                    </a>
+                </nav>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-10 admin-content">
+                <div class="admin-header">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h2>@ViewBag.Title</h2>
+                            <p>@ViewBag.Message</p>
+                        </div>
+                        <div class="col-md-4 text-right">
+                            <div class="admin-user-info">
+                                <span class="glyphicon glyphicon-user"></span>
+                                <strong>@Session["AdminName"]</strong>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-right">
+                                        <li><a href="@Url.Action("Profile", "Auth")"><i class="glyphicon glyphicon-user"></i> Thông tin cá nhân</a></li>
+                                        <li><a href="@Url.Action("ChangePassword", "Auth")"><i class="glyphicon glyphicon-lock"></i> Đổi mật khẩu</a></li>
+                                        <li class="divider"></li>
+                                        <li><a href="@Url.Action("Logout", "Auth")"><i class="glyphicon glyphicon-log-out"></i> Đăng xuất</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        @TempData["SuccessMessage"]
+                    </div>
+                }
+                
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        @TempData["ErrorMessage"]
+                    </div>
+                }
+                
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

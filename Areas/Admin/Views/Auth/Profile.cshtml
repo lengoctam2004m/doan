@@ -1,0 +1,145 @@
+@model TechStore.Models.AdminUser
+
+@{
+    ViewBag.Title = "Thông tin cá nhân";
+    ViewBag.Message = "Quản lý thông tin tài khoản admin";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>Thông tin cá nhân</h4>
+            </div>
+            <div class="panel-body">
+                <dl class="dl-horizontal">
+                    <dt>Tên đăng nhập:</dt>
+                    <dd>@Model.Username</dd>
+                    
+                    <dt>Họ tên:</dt>
+                    <dd>@Model.FullName</dd>
+                    
+                    <dt>Email:</dt>
+                    <dd>@Model.Email</dd>
+                    
+                    <dt>Vai trò:</dt>
+                    <dd>
+                        <span class="label label-primary">@Model.Role</span>
+                    </dd>
+                    
+                    <dt>Trạng thái:</dt>
+                    <dd>
+                        @if (Model.IsActive)
+                        {
+                            <span class="label label-success">Hoạt động</span>
+                        }
+                        else
+                        {
+                            <span class="label label-danger">Ngừng hoạt động</span>
+                        }
+                    </dd>
+                    
+                    <dt>Ngày tạo:</dt>
+                    <dd>@Model.CreatedDate.ToString("dd/MM/yyyy HH:mm")</dd>
+                    
+                    @if (Model.LastLoginDate.HasValue)
+                    {
+                        <dt>Đăng nhập cuối:</dt>
+                        <dd>@Model.LastLoginDate.Value.ToString("dd/MM/yyyy HH:mm")</dd>
+                    }
+                </dl>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>Đổi mật khẩu</h4>
+            </div>
+            <div class="panel-body">
+                @using (Html.BeginForm("ChangePassword", "Auth", FormMethod.Post))
+                {
+                    <div class="form-group">
+                        <label for="OldPassword">Mật khẩu cũ</label>
+                        <input type="password" class="form-control" id="OldPassword" name="OldPassword" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="NewPassword">Mật khẩu mới</label>
+                        <input type="password" class="form-control" id="NewPassword" name="NewPassword" required minlength="6">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="ConfirmPassword">Xác nhận mật khẩu mới</label>
+                        <input type="password" class="form-control" id="ConfirmPassword" name="ConfirmPassword" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="glyphicon glyphicon-lock"></i> Đổi mật khẩu
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>Thống kê hoạt động</h4>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <h3>@ViewBag.TotalProducts</h3>
+                            <p>Sản phẩm quản lý</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <h3>@ViewBag.TotalOrders</h3>
+                            <p>Đơn hàng xử lý</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <h3>@ViewBag.TotalCustomers</h3>
+                            <p>Khách hàng</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <h3>@ViewBag.TotalRevenue.ToString("N0") VNĐ</h3>
+                            <p>Tổng doanh thu</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        // Validate password confirmation
+        $('#ConfirmPassword').on('keyup', function() {
+            if ($('#NewPassword').val() != $('#ConfirmPassword').val()) {
+                $('#ConfirmPassword')[0].setCustomValidity('Mật khẩu xác nhận không khớp');
+            } else {
+                $('#ConfirmPassword')[0].setCustomValidity('');
+            }
+        });
+        
+        $('#NewPassword').on('keyup', function() {
+            if ($('#NewPassword').val() != $('#ConfirmPassword').val()) {
+                $('#ConfirmPassword')[0].setCustomValidity('Mật khẩu xác nhận không khớp');
+            } else {
+                $('#ConfirmPassword')[0].setCustomValidity('');
+            }
+        });
+    </script>
+}

@@ -1,0 +1,67 @@
+@model IEnumerable<TechStore.Models.Product>
+
+@{
+    ViewBag.Title = "Trang chủ - TechStore";
+}
+
+<div class="jumbotron">
+    <h1>TechStore</h1>
+    <p class="lead">Cửa hàng công nghệ hàng đầu - Nơi bạn tìm thấy những sản phẩm công nghệ tốt nhất với giá cả hợp lý.</p>
+    <p><a href="@Url.Action("Index", "Products")" class="btn btn-primary btn-lg">Xem sản phẩm &raquo;</a></p>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Danh mục sản phẩm</h2>
+        <div class="row">
+            @if (ViewBag.Categories != null)
+            {
+                foreach (var category in ViewBag.Categories)
+                {
+                    <div class="col-md-2">
+                        <div class="thumbnail text-center">
+                            <div class="caption">
+                                <h4>@category.Name</h4>
+                                <p>@category.Description</p>
+                                <p><a href="@Url.Action("ProductsByCategory", "Home", new { categoryId = category.CategoryId })" class="btn btn-default">Xem sản phẩm</a></p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Sản phẩm nổi bật</h2>
+        <div class="row">
+            @foreach (var product in Model)
+            {
+                <div class="col-md-3">
+                    <div class="thumbnail">
+                        @if (!string.IsNullOrEmpty(product.ImageUrl))
+                        {
+                            <img src="@product.ImageUrl" alt="@product.Name" style="height: 200px; width: 100%; object-fit: cover;">
+                        }
+                        else
+                        {
+                            <img src="~/Images/no-image.jpg" alt="Không có hình ảnh" style="height: 200px; width: 100%; object-fit: cover;">
+                        }
+                        <div class="caption">
+                            <h4>@product.Name</h4>
+                            <p>@product.Brand</p>
+                            <p><strong>@product.Price.ToString("N0") VNĐ</strong></p>
+                            <p>Tồn kho: @product.StockQuantity</p>
+                            <p>
+                                <a href="@Url.Action("Details", "Products", new { id = product.ProductId })" class="btn btn-primary">Chi tiết</a>
+                                <a href="@Url.Action("ProductDetails", "Home", new { id = product.ProductId })" class="btn btn-default">Xem nhanh</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,264 @@
+@model TechStore.Areas.Admin.Controllers.ReportViewModel
+
+@{
+    ViewBag.Title = "Báo cáo thống kê";
+    ViewBag.Message = "Báo cáo doanh thu và thống kê hệ thống";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>Bộ lọc báo cáo</h4>
+            </div>
+            <div class="panel-body">
+                @using (Html.BeginForm("GenerateReport", "Admin", FormMethod.Post))
+                {
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="startDate">Từ ngày</label>
+                                <input type="date" class="form-control" id="startDate" name="startDate" value="@Model.StartDate.ToString("yyyy-MM-dd")">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="endDate">Đến ngày</label>
+                                <input type="date" class="form-control" id="endDate" name="endDate" value="@Model.EndDate.ToString("yyyy-MM-dd")">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>&nbsp;</label>
+                                <button type="submit" class="btn btn-primary form-control">
+                                    <i class="glyphicon glyphicon-search"></i> Tạo báo cáo
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Tổng quan doanh thu -->
+    <div class="col-md-3">
+        <div class="stat-card">
+            <h3>@Model.Orders.Sum(o => o.TotalAmount).ToString("N0") VNĐ</h3>
+            <p>Tổng doanh thu</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <h3>@Model.Orders.Count()</h3>
+            <p>Tổng đơn hàng</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <h3>@(Model.Orders.Count() > 0 ? (Model.Orders.Sum(o => o.TotalAmount) / Model.Orders.Count()).ToString("N0") : "0") VNĐ</h3>
+            <p>Giá trị TB/đơn</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <h3>@Model.Products.Count()</h3>
+            <p>Sản phẩm</p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Biểu đồ doanh thu theo ngày -->
+    <div class="col-md-8">
+        <div class="chart-container">
+            <h4>Doanh thu theo ngày</h4>
+            <canvas id="dailyRevenueChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+    
+    <!-- Thống kê trạng thái đơn hàng -->
+    <div class="col-md-4">
+        <div class="chart-container">
+            <h4>Trạng thái đơn hàng</h4>
+            <canvas id="orderStatusChart" width="300" height="200"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Top sản phẩm bán chạy -->
+    <div class="col-md-6">
+        <div class="chart-container">
+            <h4>Top sản phẩm bán chạy</h4>
+            @{
+                var topProducts = Model.Orders
+                    .SelectMany(o => o.OrderDetails)
+                    .GroupBy(od => od.Product)
+                    .Select(g => new { Product = g.Key, TotalSold = g.Sum(od => od.Quantity), TotalRevenue = g.Sum(od => od.TotalPrice) })
+                    .OrderByDescending(x => x.TotalSold)
+                    .Take(10)
+                    .ToList();
+            }
+            
+            @if (topProducts.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Sản phẩm</th>
+                                <th>Số lượng</th>
+                                <th>Doanh thu</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in topProducts)
+                            {
+                                <tr>
+                                    <td>@item.Product.Name</td>
+                                    <td><span class="badge">@item.TotalSold</span></td>
+                                    <td>@item.TotalRevenue.ToString("N0") VNĐ</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted">Không có dữ liệu bán hàng trong khoảng thời gian này</p>
+            }
+        </div>
+    </div>
+    
+    <!-- Chi tiết đơn hàng -->
+    <div class="col-md-6">
+        <div class="chart-container">
+            <h4>Chi tiết đơn hàng</h4>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Mã đơn</th>
+                            <th>Khách hàng</th>
+                            <th>Ngày</th>
+                            <th>Trạng thái</th>
+                            <th>Tổng tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in Model.Orders.Take(10))
+                        {
+                            <tr>
+                                <td>#@order.OrderId</td>
+                                <td>@order.Customer.FullName</td>
+                                <td>@order.OrderDate.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    @switch (order.Status)
+                                    {
+                                        case TechStore.Models.OrderStatus.Pending:
+                                            <span class="label label-warning">Chờ xử lý</span>
+                                            break;
+                                        case TechStore.Models.OrderStatus.Processing:
+                                            <span class="label label-info">Đang xử lý</span>
+                                            break;
+                                        case TechStore.Models.OrderStatus.Shipped:
+                                            <span class="label label-primary">Đã giao hàng</span>
+                                            break;
+                                        case TechStore.Models.OrderStatus.Delivered:
+                                            <span class="label label-success">Đã nhận hàng</span>
+                                            break;
+                                        case TechStore.Models.OrderStatus.Cancelled:
+                                            <span class="label label-danger">Đã hủy</span>
+                                            break;
+                                    }
+                                </td>
+                                <td>@order.TotalAmount.ToString("N0") VNĐ</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Biểu đồ doanh thu theo ngày
+        var dailyRevenueData = @Html.Raw(Json.Encode(Model.Orders.GroupBy(o => o.OrderDate.Date).Select(g => new { Date = g.Key.ToString("dd/MM"), Revenue = g.Sum(o => o.TotalAmount) }).OrderBy(x => x.Date).ToList()));
+        var dailyLabels = dailyRevenueData.map(x => x.Date);
+        var dailyValues = dailyRevenueData.map(x => x.Revenue);
+        
+        var dailyCtx = document.getElementById('dailyRevenueChart').getContext('2d');
+        var dailyChart = new Chart(dailyCtx, {
+            type: 'bar',
+            data: {
+                labels: dailyLabels,
+                datasets: [{
+                    label: 'Doanh thu (VNĐ)',
+                    data: dailyValues,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString('vi-VN') + ' VNĐ';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Biểu đồ trạng thái đơn hàng
+        var statusData = {
+            @{
+                var statusCounts = Model.Orders.GroupBy(o => o.Status).Select(g => new { Status = g.Key, Count = g.Count() }).ToList();
+            }
+            labels: ['Chờ xử lý', 'Đang xử lý', 'Đã giao hàng', 'Đã nhận hàng', 'Đã hủy'],
+            datasets: [{
+                data: [
+                    @(statusCounts.FirstOrDefault(x => x.Status == TechStore.Models.OrderStatus.Pending)?.Count ?? 0),
+                    @(statusCounts.FirstOrDefault(x => x.Status == TechStore.Models.OrderStatus.Processing)?.Count ?? 0),
+                    @(statusCounts.FirstOrDefault(x => x.Status == TechStore.Models.OrderStatus.Shipped)?.Count ?? 0),
+                    @(statusCounts.FirstOrDefault(x => x.Status == TechStore.Models.OrderStatus.Delivered)?.Count ?? 0),
+                    @(statusCounts.FirstOrDefault(x => x.Status == TechStore.Models.OrderStatus.Cancelled)?.Count ?? 0)
+                ],
+                backgroundColor: [
+                    '#f39c12',
+                    '#3498db',
+                    '#9b59b6',
+                    '#27ae60',
+                    '#e74c3c'
+                ]
+            }]
+        };
+        
+        var statusCtx = document.getElementById('orderStatusChart').getContext('2d');
+        var statusChart = new Chart(statusCtx, {
+            type: 'doughnut',
+            data: statusData,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    </script>
+}

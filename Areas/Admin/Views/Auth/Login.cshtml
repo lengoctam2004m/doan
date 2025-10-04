@@ -1,0 +1,140 @@
+@model TechStore.Areas.Admin.Controllers.LoginViewModel
+
+@{
+    ViewBag.Title = "Đăng nhập Admin";
+    Layout = "~/Areas/Admin/Views/Shared/_AuthLayout.cshtml";
+}
+
+<div class="login-container">
+    <div class="login-box">
+        <div class="login-header">
+            <h2>Admin Login</h2>
+            <p>Đăng nhập vào hệ thống quản trị</p>
+        </div>
+        
+        @using (Html.BeginForm("Login", "Auth", FormMethod.Post, new { @class = "login-form" }))
+        {
+            @Html.AntiForgeryToken()
+            
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                </div>
+            }
+            
+            <div class="form-group">
+                @Html.LabelFor(m => m.Username, new { @class = "control-label" })
+                @Html.TextBoxFor(m => m.Username, new { @class = "form-control", placeholder = "Nhập tên đăng nhập" })
+                @Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-danger" })
+            </div>
+            
+            <div class="form-group">
+                @Html.LabelFor(m => m.Password, new { @class = "control-label" })
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Nhập mật khẩu" })
+                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+            </div>
+            
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        @Html.CheckBoxFor(m => m.RememberMe)
+                        Ghi nhớ đăng nhập
+                    </label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-block">
+                    <i class="glyphicon glyphicon-log-in"></i> Đăng nhập
+                </button>
+            </div>
+        }
+        
+        <div class="login-footer">
+            <p><a href="@Url.Action("Index", "Home", new { area = "" })">← Về trang chủ</a></p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .login-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 20px;
+    }
+    
+    .login-box {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        padding: 40px;
+        width: 100%;
+        max-width: 400px;
+    }
+    
+    .login-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .login-header h2 {
+        color: #333;
+        margin-bottom: 10px;
+    }
+    
+    .login-header p {
+        color: #666;
+        margin: 0;
+    }
+    
+    .login-form .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .login-form .control-label {
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .login-form .form-control {
+        height: 45px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        padding: 0 15px;
+    }
+    
+    .login-form .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        height: 45px;
+        border-radius: 5px;
+        font-weight: 600;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+    }
+    
+    .login-footer {
+        text-align: center;
+        margin-top: 20px;
+    }
+    
+    .login-footer a {
+        color: #667eea;
+        text-decoration: none;
+    }
+    
+    .login-footer a:hover {
+        text-decoration: underline;
+    }
+</style>

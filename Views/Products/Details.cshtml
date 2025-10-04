@@ -1,0 +1,112 @@
+@model TechStore.Models.Product
+
+@{
+    ViewBag.Title = "Chi tiết sản phẩm";
+}
+
+<h2>Chi tiết sản phẩm</h2>
+
+<div class="row">
+    <div class="col-md-4">
+        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+        {
+            <img src="@Model.ImageUrl" alt="@Model.Name" class="img-responsive img-thumbnail">
+        }
+        else
+        {
+            <img src="~/Images/no-image.jpg" alt="Không có hình ảnh" class="img-responsive img-thumbnail">
+        }
+    </div>
+    <div class="col-md-8">
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Description)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Price)
+            </dt>
+            <dd>
+                <strong>@Model.Price.ToString("N0") VNĐ</strong>
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.StockQuantity)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.StockQuantity)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Category)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Category.Name)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Brand)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Brand)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.SKU)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.SKU)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.IsActive)
+            </dt>
+            <dd>
+                @if (Model.IsActive)
+                {
+                    <span class="label label-success">Hoạt động</span>
+                }
+                else
+                {
+                    <span class="label label-danger">Ngừng bán</span>
+                }
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.CreatedDate)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.CreatedDate)
+            </dd>
+
+            @if (Model.UpdatedDate.HasValue)
+            {
+                <dt>
+                    @Html.DisplayNameFor(model => model.UpdatedDate)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.UpdatedDate)
+                </dd>
+            }
+        </dl>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <p>
+            @Html.ActionLink("Sửa", "Edit", new { id = Model.ProductId }, new { @class = "btn btn-warning" })
+            @Html.ActionLink("Quay lại danh sách", "Index", null, new { @class = "btn btn-default" })
+        </p>
+    </div>
+</div>
